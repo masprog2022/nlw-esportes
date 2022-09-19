@@ -1,7 +1,7 @@
 import express from "express";
 import cors from 'cors'
 import { PrismaClient } from '@prisma/client'
-import { convertHourStringToMinutos } from "./utils/convert-hour-string-to-minutos";
+import { convertHourStringToMinutes } from "./utils/convert-hour-string-to-minutos";
 import { convertMinutesToHourString } from './utils/convert-minutes-to-hour-string'
 
 const app = express();
@@ -29,24 +29,25 @@ app.get('/games', async (request, response) => {
 })
 
 
-app.post('/games/:id/ads', async (request, response) => {
-  const gameId = request.params.id;
-  const body = request.body;
+app.post('/games/:id/ads', async (req, res) => {
+  const gameId = req.params.id;
+  const body = req.body;
 
   const ad = await prisma.ad.create({
     data: {
       gameId,
       name: body.name,
       yearsPlayImg: body.yearsPlayImg,
-      discord: body.discord,   
-      weekDays: body.weekDays.join(','),       
-      hoursStart: convertHourStringToMinutos(body.hoursStart),     
-      hourEnd: convertHourStringToMinutos(body.hourEnd),           
-      useVoiceChannel: body.useVoiceChannel   
+      discord: body.discord,
+      weekDays: body.weekDays.join(','),
+      hoursStart:convertHourStringToMinutes(body.hoursStart),
+      //hourStart: convertHourStringToMinutes(body.hourStart),
+      hourEnd: convertHourStringToMinutes(body.hourEnd),
+      useVoiceChannel: body.useVoiceChannel,
     }
   })
 
-  return response.status(201).json(ad)
+  return res.status(201).json(ad)
 })
 
 app.get("/games/:id/ads", async (request, response) => {
@@ -103,4 +104,4 @@ app.get("/ads/:id/discord", async (request, response) => {
 
 
 
-app.listen(3333);
+app.listen(3001);
